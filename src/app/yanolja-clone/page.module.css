@@ -1,0 +1,160 @@
+
+.container {
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  border-bottom: 1px solid #eee;
+}
+
+.topBanner {
+  background-color: #f8f8f8;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.mainNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navLinks a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #333;
+}
+
+.userNav a {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #333;
+}
+
+.mainContent {
+  padding: 20px;
+}
+
+.hero {
+  background-image: url('https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  padding: 100px 20px;
+  text-align: center;
+  color: white;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.searchBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  width: 600px;
+  margin: 0 auto;
+  border-radius: 30px;
+  padding: 5px;
+}
+
+.searchBar input {
+  flex-grow: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  outline: none;
+}
+
+.searchBar button {
+  padding: 10px 25px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.quickMenu {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.menuItem {
+  margin: 0 10px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.section h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.cardImage {
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+}
+
+.card:nth-child(1) .cardImage {
+  background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.card:nth-child(2) .cardImage {
+  background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.card:nth-child(3) .cardImage {
+  background-image: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.cardContent {
+  padding: 15px;
+}
+
+.cardContent h3 {
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
+.cardContent p {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+
+.footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #eee;
+  font-size: 14px;
+  color: #777;
+}
