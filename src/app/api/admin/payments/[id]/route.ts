@@ -134,7 +134,8 @@ export async function PUT(
         if (failReason) updateData.failReason = failReason
         break
       case 'REFUNDED':
-        updateData.refundedAmount = refundAmount || payment.amount
+        updateData.refundedAt = new Date()
+        if (refundReason) updateData.refundReason = refundReason
         // 환불 기록 생성
         if (refundAmount || payment.amount) {
           await prisma.refund.create({
@@ -148,9 +149,10 @@ export async function PUT(
           })
         }
         break
-      case 'PARTIAL_REFUNDED':
+      case 'PARTIAL_REFUND':
         if (refundAmount) {
-          updateData.refundedAmount = payment.refundedAmount + refundAmount
+          updateData.refundedAt = new Date()
+          if (refundReason) updateData.refundReason = refundReason
           // 부분 환불 기록 생성
           await prisma.refund.create({
             data: {
