@@ -178,13 +178,13 @@ export class TranslationService {
           const multilingualContent = await this.translateToMultiLanguages(campaignData[field]);
           translatedData[`${field}_ko`] = multilingualContent.ko;
           translatedData[`${field}_en`] = multilingualContent.en;
-          translatedData[`${field}_ja`] = multilingualContent.ja;
+          translatedData[`${field}_jp`] = multilingualContent.jp;
         } catch (error) {
           console.error(`Failed to translate ${field}:`, error);
           // 번역 실패 시 원본 텍스트 사용
           translatedData[`${field}_ko`] = campaignData[field];
           translatedData[`${field}_en`] = campaignData[field];
-          translatedData[`${field}_ja`] = campaignData[field];
+          translatedData[`${field}_jp`] = campaignData[field];
         }
       }
     }
@@ -201,12 +201,12 @@ export class TranslationService {
         
         translatedData.hashtags_ko = hashtags;
         translatedData.hashtags_en = translatedHashtagsEn.map(t => t.translatedText);
-        translatedData.hashtags_ja = translatedHashtagsJa.map(t => t.translatedText);
+        translatedData.hashtags_jp = translatedHashtagsJa.map(t => t.translatedText);
       } catch (error) {
         console.error('Failed to translate hashtags:', error);
         translatedData.hashtags_ko = hashtags;
         translatedData.hashtags_en = hashtags;
-        translatedData.hashtags_ja = hashtags;
+        translatedData.hashtags_jp = hashtags;
       }
     }
 

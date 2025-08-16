@@ -158,13 +158,13 @@ export async function PUT(request: NextRequest) {
 
       // 자동 번역
       let enText = item.ko;
-      let jaText = item.ko;
+      let jpText = item.ko;
 
       if (process.env.GOOGLE_TRANSLATE_API_KEY) {
         try {
           const multiLang = await translationService.translateToMultiLanguages(item.ko);
           enText = multiLang.en;
-          jaText = multiLang.ja;
+          jpText = multiLang.jp;
         } catch (error) {
           console.error(`번역 실패 - ${item.key}:`, error);
         }
@@ -176,7 +176,7 @@ export async function PUT(request: NextRequest) {
           key: item.key,
           ko: item.ko,
           en: enText,
-          ja: jaText,
+          jp: jpText,
           category: item.category,
           isEditable: true
         }
