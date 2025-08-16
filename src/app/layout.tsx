@@ -3,7 +3,12 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  fallback: ['system-ui', 'arial'],
+  preload: false
+})
 
 export const metadata: Metadata = {
   title: 'LinkPick - 비즈니스와 인플루언서의 완벽한 연결',
