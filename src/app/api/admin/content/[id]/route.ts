@@ -39,81 +39,11 @@ export async function GET(
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
     }
 
-    // 콘텐츠 상세 조회
-    const content = await prisma.content.findUnique({
-      where: { id: params.id },
-      include: {
-        application: {
-          include: {
-            campaign: {
-              select: {
-                id: true,
-                title: true
-              }
-            },
-            influencer: {
-              select: {
-                id: true,
-                name: true,
-                email: true
-              }
-            }
-          }
-        },
-        media: {
-          select: {
-            id: true,
-            type: true,
-            order: true,
-            file: {
-              select: {
-                id: true,
-                url: true,
-                filename: true,
-                originalName: true
-              }
-            }
-          },
-          orderBy: {
-            order: 'asc'
-          }
-        }
-      }
-    })
-
-    if (!content) {
-      return NextResponse.json({ error: 'Content not found' }, { status: 404 })
-    }
-
-    // 응답 데이터 포맷팅
-    const formattedContent = {
-      id: content.id,
-      title: content.application?.campaign?.title || '제목 없음',
-      type: 'post',
-      status: content.status,
-      createdAt: content.createdAt.toISOString().split('T')[0],
-      reviewedAt: content.reviewedAt?.toISOString().split('T')[0],
-      url: content.contentUrl,
-      description: content.description,
-      platform: content.platform,
-      feedback: content.feedback,
-      applicationId: content.applicationId,
-      campaignId: content.application?.campaign?.id,
-      campaignTitle: content.application?.campaign?.title,
-      influencerName: content.application?.influencer?.name,
-      views: 0,
-      likes: 0,
-      comments: 0,
-      media: content.media?.map(m => ({
-        id: m.id,
-        url: m.file.url,
-        type: m.type,
-        order: m.order,
-        filename: m.file.originalName || m.file.filename
-      })) || []
-    }
-
-    return NextResponse.json({ content: formattedContent })
+    // Content 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'Content model not implemented in schema' },
+      { status: 501 }
+    )
 
   } catch (error) {
     console.error('Admin content detail API error:', error)
@@ -162,20 +92,11 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
     }
 
-    // 콘텐츠 상태 업데이트
-    const updatedContent = await prisma.content.update({
-      where: { id: params.id },
-      data: {
-        status,
-        feedback,
-        reviewedAt: new Date()
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      content: updatedContent
-    })
+    // Content 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'Content model not implemented in schema' },
+      { status: 501 }
+    )
 
   } catch (error) {
     console.error('Content status update API error:', error)

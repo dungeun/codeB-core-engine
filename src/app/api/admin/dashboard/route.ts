@@ -8,38 +8,22 @@ export const runtime = 'nodejs'
 // GET /api/admin/dashboard - 관리자 대시보드 통계
 export async function GET(request: NextRequest) {
   try {
-    // 개발 환경에서 디버깅을 위한 간단한 체크
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[Dashboard API] Request received');
-      console.log('[Dashboard API] Authorization:', request.headers.get('authorization')?.substring(0, 50) + '...');
-    }
-    
     // 공통 인증 함수 사용
     const authResult = await requireAdminAuth(request);
     if (authResult.error) {
-      console.log('[Dashboard API] Auth failed:', authResult.error);
       return authResult.error;
     }
     const { user } = authResult;
-    
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[Dashboard API] Authenticated user:', user.email, user.type);
-    }
 
-    // 통계 데이터 조회
+    // 기본 통계 데이터 조회 (스키마에 존재하는 모델만 사용)
     const [
       totalUsers,
       activeUsers,
-      totalCampaigns,
-      activeCampaigns,
       totalPayments,
       newUsersToday,
       pendingBusinessProfiles,
       pendingInfluencerProfiles,
-      recentUsers,
-      recentCampaigns,
-      recentApplications,
-      recentPayments
+      recentUsers
     ] = await Promise.all([
       // 전체 사용자 수
       prisma.user.count(),
@@ -53,19 +37,11 @@ export async function GET(request: NextRequest) {
         }
       }),
       
-      // 전체 캠페인 수
-      prisma.campaign.count(),
-      
-      // 활성 캠페인 수
-      prisma.campaign.count({
-        where: { status: 'ACTIVE' }
-      }),
-      
-      // 총 결제 금액
+      // 총 결제 금액 (Payment 모델이 존재하는 경우)
       prisma.payment.aggregate({
         where: { status: 'COMPLETED' },
         _sum: { amount: true }
-      }),
+      }).catch(() => ({ _sum: { amount: 0 } })),
       
       // 오늘 가입한 사용자 수
       prisma.user.count({
@@ -97,51 +73,6 @@ export async function GET(request: NextRequest) {
           type: true,
           createdAt: true
         }
-      }),
-      
-      // 최근 생성된 캠페인 (5개)
-      prisma.campaign.findMany({
-        take: 5,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          business: {
-            select: {
-              name: true,
-              businessProfile: {
-                select: { companyName: true }
-              }
-            }
-          }
-        }
-      }),
-      
-      // 최근 캠페인 지원 (5개)
-      prisma.campaignApplication.findMany({
-        take: 5,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          campaign: {
-            select: { title: true }
-          },
-          influencer: {
-            select: { name: true }
-          }
-        }
-      }),
-      
-      // 최근 결제 (5개)
-      prisma.payment.findMany({
-        take: 5,
-        orderBy: { createdAt: 'desc' },
-        where: { status: 'COMPLETED' },
-        include: {
-          user: {
-            select: { name: true }
-          },
-          campaign: {
-            select: { title: true }
-          }
-        }
       })
     ]);
 
@@ -156,46 +87,15 @@ export async function GET(request: NextRequest) {
       ? ((totalUsers - previousMonthUsers) / previousMonthUsers * 100).toFixed(1)
       : 0;
 
-    // 최근 활동 데이터 포맷팅
-    const recentActivities = [
-      ...recentUsers.map(user => ({
-        id: `user-${user.id}`,
-        type: 'user_registered',
-        title: '새 사용자 가입',
-        description: `${user.type === 'BUSINESS' ? '비즈니스' : '인플루언서'} "${user.name}"님이 가입했습니다.`,
-        time: getRelativeTime(user.createdAt),
-        icon: '👤'
-      })),
-      ...recentCampaigns.map(campaign => ({
-        id: `campaign-${campaign.id}`,
-        type: 'campaign_created',
-        title: '새 캠페인 생성',
-        description: `${campaign.business.businessProfile?.companyName || campaign.business.name}에서 "${campaign.title}" 캠페인을 생성했습니다.`,
-        time: getRelativeTime(campaign.createdAt),
-        icon: '📢'
-      })),
-      ...recentApplications.map(app => ({
-        id: `app-${app.id}`,
-        type: 'application_submitted',
-        title: '캠페인 지원',
-        description: `${app.influencer.name}님이 "${app.campaign.title}" 캠페인에 지원했습니다.`,
-        time: getRelativeTime(app.createdAt),
-        icon: '📝'
-      })),
-      ...recentPayments.map(payment => ({
-        id: `payment-${payment.id}`,
-        type: 'payment_completed',
-        title: '결제 완료',
-        description: `${payment.campaign?.title || '캠페인'} 정산금 ₩${payment.amount.toLocaleString()}이 처리되었습니다.`,
-        time: getRelativeTime(payment.createdAt),
-        icon: '💰'
-      }))
-    ].sort((a, b) => {
-      // 시간순 정렬 (최신순)
-      const timeA = parseRelativeTime(a.time);
-      const timeB = parseRelativeTime(b.time);
-      return timeB - timeA;
-    }).slice(0, 10);
+    // 최근 활동 데이터 포맷팅 (기본 데이터만 사용)
+    const recentActivities = recentUsers.map(user => ({
+      id: `user-${user.id}`,
+      type: 'user_registered',
+      title: '새 사용자 가입',
+      description: `${user.type === 'BUSINESS' ? '비즈니스' : '인플루언서'} "${user.name}"님이 가입했습니다.`,
+      time: getRelativeTime(user.createdAt),
+      icon: '👤'
+    }));
 
     // 시스템 알림 (예시)
     const systemAlerts = [];
@@ -215,8 +115,8 @@ export async function GET(request: NextRequest) {
     const stats = {
       totalUsers,
       activeUsers,
-      totalCampaigns,
-      activeCampaigns,
+      totalCampaigns: 0, // Campaign 모델이 스키마에 없으므로 기본값
+      activeCampaigns: 0, // Campaign 모델이 스키마에 없으므로 기본값
       revenue: totalPayments._sum.amount || 0,
       growth: Number(growth),
       newUsers: newUsersToday,

@@ -69,68 +69,11 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    // 콘텐츠 목록 조회
-    const contents = await prisma.content.findMany({
-      where,
-      include: {
-        application: {
-          select: {
-            id: true,
-            campaign: {
-              select: {
-                id: true,
-                title: true
-              }
-            },
-            influencer: {
-              select: {
-                id: true,
-                name: true,
-                email: true
-              }
-            }
-          }
-        }
-      },
-      orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit
-    })
-
-    // 총 개수 조회
-    const totalCount = await prisma.content.count({ where })
-
-    // 응답 데이터 포맷팅
-    const formattedContents = contents.map(content => ({
-      id: content.id,
-      title: content.application?.campaign?.title || '제목 없음',
-      type: 'post', // 기본값으로 post 타입 설정
-      status: content.status,
-      createdAt: content.createdAt.toISOString().split('T')[0],
-      reviewedAt: content.reviewedAt?.toISOString().split('T')[0],
-      url: content.contentUrl,
-      description: content.description,
-      platform: content.platform,
-      feedback: content.feedback,
-      applicationId: content.applicationId,
-      campaignId: content.application?.campaign?.id,
-      campaignTitle: content.application?.campaign?.title,
-      influencerName: content.application?.influencer?.name,
-      campaignPlatform: content.platform,
-      views: 0, // 기본값
-      likes: 0, // 기본값
-      comments: 0 // 기본값
-    }))
-
-    return NextResponse.json({
-      contents: formattedContents,
-      pagination: {
-        page,
-        limit,
-        total: totalCount,
-        totalPages: Math.ceil(totalCount / limit)
-      }
-    })
+    // Content 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'Content model not implemented in schema' },
+      { status: 501 }
+    )
 
   } catch (error) {
     console.error('Admin content API error:', error)
