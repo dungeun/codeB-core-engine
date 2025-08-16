@@ -12,9 +12,12 @@ interface TranslationType {
   ko: string
   en: string
   jp: string
+  ja?: string  // ja 속성도 추가 (일부 데이터에서 사용)
+  category?: string  // category 속성 추가
   isAutoTranslated: {
     en: boolean
     jp: boolean
+    ja?: boolean  // ja도 추가
   }
   lastEditedBy?: string
   editedAt?: string
@@ -28,7 +31,7 @@ export default function TranslationManagementPage() {
   const [categories, setCategories] = useState<{category: string, count: number}[]>([])
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState<{ en: string; jp: string }>({ en: '', jp: '' })
+  const [editForm, setEditForm] = useState<{ en: string; jp: string; ja?: string }>({ en: '', jp: '' })
   const [editingField, setEditingField] = useState<'en' | 'jp' | null>(null)
   const [autoTranslating, setAutoTranslating] = useState<string | null>(null)
   const [apiStatus, setApiStatus] = useState<'checking' | 'available' | 'unavailable'>('checking')
@@ -41,7 +44,7 @@ export default function TranslationManagementPage() {
     languagePackSetup: {
       isConfigured: false,
       languages: ['ko', 'en', 'jp'],
-      configuredAt: null
+      configuredAt: null as string | null
     }
   })
   const [saving, setSaving] = useState(false)
@@ -62,7 +65,7 @@ export default function TranslationManagementPage() {
           
           // 카테고리별 카운트 계산
           const categoryMap = new Map<string, number>()
-          data.forEach((item: Record<string, unknown>) => {
+          data.forEach((item: TranslationType) => {
             if (item.category) {
               categoryMap.set(item.category, (categoryMap.get(item.category) || 0) + 1)
             }
@@ -136,7 +139,7 @@ export default function TranslationManagementPage() {
       if (selectedCategory === 'all') {
         setTranslations(allTranslations)
       } else {
-        const filtered = allTranslations.filter((item: Record<string, unknown>) => item.category === selectedCategory)
+        const filtered = allTranslations.filter((item) => item.category === selectedCategory)
         setTranslations(filtered)
       }
     }
@@ -622,7 +625,7 @@ export default function TranslationManagementPage() {
                       <div className="flex items-center justify-between mb-2">
                         <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                           일본어
-                          {item.isAutoTranslated.ja && (
+                          {(item.isAutoTranslated as any).ja && (
                             <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">
                               자동번역
                             </span>
@@ -639,7 +642,7 @@ export default function TranslationManagementPage() {
                       {editingId === item.id && editingField === 'jp' ? (
                         <div className="space-y-2">
                           <textarea
-                            value={editForm.ja}
+                            value={editForm.ja || editForm.jp}
                             onChange={(e) => setEditForm({ ...editForm, jp: e.target.value })}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={3}

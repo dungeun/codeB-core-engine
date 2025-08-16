@@ -27,7 +27,7 @@ export async function GET(
     }
 
     // 게시물 목록 조회
-    const posts = await prisma.$queryRaw`
+    const posts = await prisma.$queryRaw<Array<{ id: string; board_id: string; title: string; content: string; view_count: number; status: string; author_id: string; author_name: string; comment_count: string | number; like_count: string | number; created_at: Date; updated_at: Date }>>`
       SELECT 
         p.*,
         u.name as author_name,
@@ -44,15 +44,15 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      posts: posts.map((post: { id: string; board_id: string; title: string; content: string; view_count: number; status: string; author_id: string; author_name: string; comment_count: string | number; like_count: string | number; created_at: Date; updated_at: Date }) => ({
+      posts: posts.map((post) => ({
         id: post.id,
         boardId: post.board_id,
         title: post.title,
         author: post.author_name || 'Unknown',
         status: post.status,
         viewCount: post.view_count || 0,
-        likeCount: parseInt(post.like_count || 0),
-        commentCount: parseInt(post.comment_count || 0),
+        likeCount: parseInt(String(post.like_count || 0)),
+        commentCount: parseInt(String(post.comment_count || 0)),
         createdAt: post.created_at
       }))
     })

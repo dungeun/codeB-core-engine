@@ -72,6 +72,30 @@ export const defaultTranslations = {
     // 알림
     'notification.title': '알림',
     'notification.empty': '알림이 없습니다',
+    
+    // 커머스 - 제품
+    'commerce.product.title': '제품',
+    'commerce.product.addToCart': '장바구니 담기',
+    'commerce.product.buyNow': '바로 구매',
+    'commerce.product.price': '가격',
+    'commerce.product.inStock': '재고 있음',
+    'commerce.product.outOfStock': '품절',
+    
+    // 커머스 - 장바구니
+    'commerce.cart.title': '장바구니',
+    'commerce.cart.empty': '장바구니가 비어있습니다',
+    'commerce.cart.checkout': '결제하기',
+    'commerce.cart.total': '합계',
+    
+    // 커머스 - 주문
+    'commerce.order.title': '주문',
+    'commerce.order.history': '주문 내역',
+    'commerce.order.status': '주문 상태',
+    
+    // 커머스 - 관리자 메뉴
+    'commerce.admin.menu.commerce': '커머스',
+    'commerce.admin.menu.products': '상품 관리',
+    'commerce.admin.menu.orders': '주문 관리',
   },
   en: {
     // Homepage
@@ -141,6 +165,30 @@ export const defaultTranslations = {
     // Notifications
     'notification.title': 'Notifications',
     'notification.empty': 'No notifications',
+    
+    // Commerce - Product
+    'commerce.product.title': 'Product',
+    'commerce.product.addToCart': 'Add to Cart',
+    'commerce.product.buyNow': 'Buy Now',
+    'commerce.product.price': 'Price',
+    'commerce.product.inStock': 'In Stock',
+    'commerce.product.outOfStock': 'Out of Stock',
+    
+    // Commerce - Cart
+    'commerce.cart.title': 'Shopping Cart',
+    'commerce.cart.empty': 'Your cart is empty',
+    'commerce.cart.checkout': 'Checkout',
+    'commerce.cart.total': 'Total',
+    
+    // Commerce - Order
+    'commerce.order.title': 'Order',
+    'commerce.order.history': 'Order History',
+    'commerce.order.status': 'Order Status',
+    
+    // Commerce - Admin Menu
+    'commerce.admin.menu.commerce': 'Commerce',
+    'commerce.admin.menu.products': 'Products',
+    'commerce.admin.menu.orders': 'Orders',
   },
   ja: {
     // ホームページ
@@ -210,6 +258,30 @@ export const defaultTranslations = {
     // 通知
     'notification.title': '通知',
     'notification.empty': '通知はありません',
+    
+    // コマース - 商品
+    'commerce.product.title': '商品',
+    'commerce.product.addToCart': 'カートに追加',
+    'commerce.product.buyNow': '今すぐ購入',
+    'commerce.product.price': '価格',
+    'commerce.product.inStock': '在庫あり',
+    'commerce.product.outOfStock': '在庫切れ',
+    
+    // コマース - カート
+    'commerce.cart.title': 'ショッピングカート',
+    'commerce.cart.empty': 'カートは空です',
+    'commerce.cart.checkout': 'レジに進む',
+    'commerce.cart.total': '合計',
+    
+    // コマース - 注文
+    'commerce.order.title': '注文',
+    'commerce.order.history': '注文履歴',
+    'commerce.order.status': '注文状況',
+    
+    // コマース - 管理メニュー
+    'commerce.admin.menu.commerce': 'コマース',
+    'commerce.admin.menu.products': '商品管理',
+    'commerce.admin.menu.orders': '注文管理',
   }
 }
 

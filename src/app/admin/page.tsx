@@ -92,7 +92,7 @@ export default function AdminDashboard() {
                          ?.split('=')[1]
           
           if (!token) {
-            logger.error('토큰이 없습니다.', { context: 'AdminDashboard' })
+            console.error('토큰이 없습니다.')
             router.push('/login')
             return
           }
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
 
           if (!response.ok) {
             const errorText = await response.text()
-            logger.error('대시보드 API 오류', { 
+            console.error('대시보드 API 오류', { 
               status: response.status,
               statusText: response.statusText,
               error: errorText,
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
           if (!isMounted) return
           
           if (error instanceof Error && error.name !== 'AbortError') {
-            logger.error('대시보드 데이터 로드 실패', { error: error.message })
+            console.error('대시보드 데이터 로드 실패', { error: error.message })
             setError('데이터를 불러오는데 실패했습니다.')
           }
           setLoading(false)

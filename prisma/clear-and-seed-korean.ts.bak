@@ -82,7 +82,6 @@ async function clearExistingData() {
   await prisma.postLike.deleteMany()
   await prisma.comment.deleteMany()
   await prisma.post.deleteMany()
-  await prisma.contentMedia.deleteMany()
   await prisma.content.deleteMany()
   await prisma.settlementItem.deleteMany()
   await prisma.settlement.deleteMany()

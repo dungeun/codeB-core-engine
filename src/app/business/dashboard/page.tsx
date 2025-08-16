@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { AuthService } from '@/lib/auth'
 import { apiGet } from '@/lib/api/client'
 import { useBusinessStats } from '@/hooks/useSharedData'
-import CampaignManagementTab from '@/components/business/CampaignManagementTab'
 import ApplicantManagementTab from '@/components/business/ApplicantManagementTab'
 import { BarChart3, Users, TrendingUp, DollarSign } from 'lucide-react'
 import { useLanguage } from '@/hooks/useLanguage'
@@ -328,7 +327,11 @@ function BusinessDashboardContent() {
 
         {/* 탭 컨텐츠 */}
         <div>
-          {activeTab === 'campaigns' && <CampaignManagementTab />}
+          {activeTab === 'campaigns' && (
+            <div className="bg-white rounded-lg p-6">
+              <p className="text-gray-600">{t('business.campaigns.coming_soon', '캠페인 관리 기능이 곧 추가됩니다.')}</p>
+            </div>
+          )}
           {activeTab === 'applicants' && <ApplicantManagementTab />}
         </div>
       </main>

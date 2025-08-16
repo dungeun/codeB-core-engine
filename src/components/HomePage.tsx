@@ -11,6 +11,7 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { logger } from '@/lib/logger'
 import RankingSection from '@/components/home/RankingSection'
 import RecommendedSection from '@/components/home/RecommendedSection'
+import CommerceSection from '@/components/home/CommerceSection'
 
 import { 
   UISection, 
@@ -666,6 +667,13 @@ function HomePage({ initialSections, initialLanguage = 'ko', initialLanguagePack
                   />
                 )
 
+              case 'commerce':
+                return (
+                  <CommerceSection
+                    key={section.id}
+                  />
+                )
+
               default:
                 return null
             }
@@ -682,6 +690,9 @@ function HomePage({ initialSections, initialLanguage = 'ko', initialLanguagePack
             </div>
           )
         )}
+
+        {/* Commerce Section - Always show */}
+        <CommerceSection />
 
       </main>
       </div>

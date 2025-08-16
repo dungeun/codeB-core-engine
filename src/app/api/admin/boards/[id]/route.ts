@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
-import { verifyAuth } from '@/lib/auth-middleware'
+import { verifyAuth } from '@/lib/auth-utils'
 
 export async function DELETE(
   request: NextRequest,
@@ -8,7 +8,7 @@ export async function DELETE(
 ) {
   try {
     const auth = await verifyAuth(request)
-    if (!auth || auth.user.type !== 'ADMIN') {
+    if (!auth || !auth.user || auth.user.type !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -74,7 +74,7 @@ export async function PUT(
 ) {
   try {
     const auth = await verifyAuth(request)
-    if (!auth || auth.user.type !== 'ADMIN') {
+    if (!auth || !auth.user || auth.user.type !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

@@ -8,6 +8,7 @@ import {
   advancedSecurityCheck
 } from './middleware.security.improved';
 import { logSecurityEvent } from '@/lib/logger/edge-logger';
+import { CSRFProtection } from '@/lib/security/csrf';
 
 // 인증이 필요없는 public 경로들
 const publicPaths = [
@@ -27,6 +28,18 @@ const publicPaths = [
   '/api/home/content',
   '/api/home/statistics',
   '/api/settings',
+  '/api/csrf', // CSRF 토큰 생성
+  '/api/session/create', // 세션 생성
+  '/api/session/migrate', // 세션 마이그레이션
+];
+
+// CSRF 검증이 필요한 경로들
+const CSRF_PROTECTED_PATHS = [
+  '/api/commerce/',
+  '/api/admin/',
+  '/api/user/',
+  '/api/business/',
+  '/api/influencer/'
 ];
 
 // 인증이 필요없는 페이지 경로들
@@ -93,6 +106,22 @@ export async function middleware(request: NextRequest) {
   // Public API는 인증 체크 스킵
   if (publicPaths.some(path => pathname.startsWith(path))) {
     return pathname.startsWith('/api/') ? await addApiSecurityHeaders(response, request) : await addSecurityHeaders(response, request);
+  }
+  
+  // CSRF 보호 적용
+  if (CSRF_PROTECTED_PATHS.some(path => pathname.startsWith(path))) {
+    const isCSRFValid = await CSRFProtection.verifyToken(request);
+    
+    if (!isCSRFValid && request.method !== 'GET' && request.method !== 'HEAD') {
+      logSecurityEvent('csrf_token_invalid', {
+        ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
+        path: pathname,
+        method: request.method
+      }, 'high');
+      
+      if (perfLogger) perfLogger.end({ status: 403, blocked: true });
+      return NextResponse.json({ error: 'Invalid CSRF token' }, { status: 403 });
+    }
   }
 
   // 기타 API 라우트는 각 라우트에서 인증 처리

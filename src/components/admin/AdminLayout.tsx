@@ -100,6 +100,25 @@ function AdminLayoutContent({ children }: AdminLayoutProps) {
       )
     },
     {
+      title: t('commerce.admin.menu.commerce', '커머스'),
+      href: '/admin/commerce',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v8m0-8l2.293 2.293c.63.63.184 1.707-.707 1.707H5M9 19a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+      submenu: [
+        {
+          title: t('commerce.admin.menu.products', '상품 관리'),
+          href: '/admin/commerce/products'
+        },
+        {
+          title: t('commerce.admin.menu.orders', '주문 관리'),
+          href: '/admin/commerce/orders'
+        }
+      ]
+    },
+    {
       title: t('admin.menu.content', '콘텐츠 관리'),
       href: '/admin/content',
       icon: (

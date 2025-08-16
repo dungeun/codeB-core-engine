@@ -1,325 +1,336 @@
-/**
- * 전역 타입 정의 - 타입 안전성을 위한 강력한 타입 시스템
- */
-
-// ===============================
-// 기본 유틸리티 타입
-// ===============================
-
-export type Nullable<T> = T | null;
-export type Optional<T> = T | undefined;
-export type Maybe<T> = T | null | undefined;
-
-export type StringOrNumber = string | number;
-export type ID = string;
-export type Timestamp = string | Date;
-
-// JSON 값을 위한 안전한 타입
-export type JsonValue = 
-  | string 
-  | number 
-  | boolean 
-  | null 
-  | JsonObject 
-  | JsonArray;
-
-export interface JsonObject {
-  [key: string]: JsonValue;
+// 전역 타입 정의
+export interface BaseEntity {
+  id: string
+  createdAt: string
+  updatedAt: string
 }
 
-export interface JsonArray extends Array<JsonValue> {}
-
-// ===============================
-// 사용자 관련 타입
-// ===============================
-
-export type UserType = 'INFLUENCER' | 'BUSINESS' | 'ADMIN';
-export type UserStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | 'BANNED';
-
-export interface BaseUser {
-  id: ID;
-  email: string;
-  name: string;
-  type: UserType;
-  status: UserStatus;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+export interface User extends BaseEntity {
+  email: string
+  name: string
+  role: UserRole
+  status: UserStatus
+  emailVerified?: boolean
+  lastLogin?: string
+  preferences?: UserPreferences
 }
 
-export interface UserProfile {
-  id: ID;
-  userId: ID;
-  bio?: string;
-  profileImage?: string;
-  phone?: string;
-  birthYear?: number;
-  gender?: string;
-  categories?: string[];
-  isVerified: boolean;
-  followerCount: number;
-  profileCompleted: boolean;
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  MODERATOR = 'MODERATOR'
 }
 
-export interface SocialAccount {
-  id: ID;
-  userId: ID;
-  platform: SocialPlatform;
-  username: string;
-  followers: number;
-  isVerified: boolean;
-  lastUpdated: Timestamp;
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  BANNED = 'BANNED'
 }
 
-export type SocialPlatform = 
-  | 'instagram' 
-  | 'youtube' 
-  | 'tiktok' 
-  | 'facebook' 
-  | 'twitter' 
-  | 'naverBlog';
-
-// ===============================
-// 캠페인 관련 타입
-// ===============================
-
-export type CampaignStatus = 
-  | 'DRAFT' 
-  | 'PUBLISHED' 
-  | 'ACTIVE' 
-  | 'COMPLETED' 
-  | 'CANCELLED';
-
-export type ApplicationStatus = 
-  | 'PENDING' 
-  | 'APPROVED' 
-  | 'REJECTED' 
-  | 'COMPLETED';
-
-export interface BaseCampaign {
-  id: ID;
-  businessId: ID;
-  title: string;
-  description: string;
-  platform: SocialPlatform[];
-  budget: number;
-  targetFollowers: number;
-  startDate: Timestamp;
-  endDate: Timestamp;
-  status: CampaignStatus;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+export interface UserPreferences {
+  language: string
+  theme: 'light' | 'dark' | 'system'
+  notifications: {
+    email: boolean
+    push: boolean
+    marketing: boolean
+  }
+  privacy: {
+    profilePublic: boolean
+    activityPublic: boolean
+  }
 }
 
-export interface CampaignApplication {
-  id: ID;
-  campaignId: ID;
-  influencerId: ID;
-  message: string;
-  proposedPrice?: number;
-  status: ApplicationStatus;
-  submittedAt: Timestamp;
-  updatedAt: Timestamp;
-}
-
-export interface CampaignCategory {
-  id: ID;
-  name: Record<LanguageCode, string>;
-  slug: string;
-  description?: Record<LanguageCode, string>;
-  icon?: string;
-  parentId?: ID;
-  order: number;
-  isActive: boolean;
-}
-
-// ===============================
-// UI 관련 타입
-// ===============================
-
-export type LanguageCode = 'ko' | 'en' | 'jp';
-
-export interface LanguagePack {
-  id: ID;
-  key: string;
-  ko: string;
-  en: string;
-  jp: string;
-  category?: string;
-  description?: string;
-}
-
-export interface UISection {
-  id: ID;
-  type: UISectionType;
-  sectionId: string;
-  title?: Record<LanguageCode, string>;
-  subtitle?: Record<LanguageCode, string>;
-  content: UISectionContent;
-  translations?: Record<LanguageCode, JsonObject>;
-  visible: boolean;
-  order: number;
-}
-
-export type UISectionType = 
-  | 'hero' 
-  | 'category' 
-  | 'quicklinks' 
-  | 'promo' 
-  | 'recommended' 
-  | 'ranking';
-
-export interface UISectionContent {
-  [key: string]: JsonValue;
-}
-
-export interface HeroSlide {
-  id: string;
-  title: Record<LanguageCode, string>;
-  subtitle: Record<LanguageCode, string>;
-  image: string;
-  link?: string;
-  buttonText?: Record<LanguageCode, string>;
-  order: number;
-}
-
-export interface QuickLink {
-  id: string;
-  title: Record<LanguageCode, string>;
-  icon: string;
-  link: string;
-  order: number;
-}
-
-// ===============================
 // API 응답 타입
-// ===============================
-
-export interface ApiResponse<T = JsonValue> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-  meta?: ApiMeta;
+export interface ApiResponse<T = any> {
+  success: boolean
+  data?: T
+  error?: string
+  message?: string
+  timestamp?: string
+  requestId?: string
 }
 
-export interface ApiMeta {
-  page?: number;
-  limit?: number;
-  total?: number;
-  totalPages?: number;
-  hasNextPage?: boolean;
-  hasPrevPage?: boolean;
+export interface PaginatedResponse<T> {
+  items: T[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+  hasNext: boolean
+  hasPrev: boolean
 }
 
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
-  meta: Required<ApiMeta>;
+export interface ApiError {
+  code: string
+  message: string
+  details?: Record<string, any>
+  path?: string
+  timestamp: string
 }
 
-// ===============================
-// 폼 및 입력 타입
-// ===============================
-
-export interface FormValidationError {
-  field: string;
-  message: string;
-  code?: string;
+// 필터 및 정렬 타입
+export interface BaseFilters {
+  page?: number
+  limit?: number
+  search?: string
+  sortBy?: string
+  sortOrder?: SortOrder
+  dateFrom?: string
+  dateTo?: string
 }
 
-export interface FormState<T = JsonObject> {
-  data: T;
-  errors: FormValidationError[];
-  isSubmitting: boolean;
-  isValid: boolean;
-  isDirty: boolean;
+export enum SortOrder {
+  ASC = 'asc',
+  DESC = 'desc'
 }
 
+// 메타데이터 타입
+export interface EntityMetadata {
+  version: number
+  tags?: string[]
+  source?: string
+  lastModifiedBy?: string
+  archived?: boolean
+  draft?: boolean
+}
+
+// 파일 관련 타입
 export interface FileUpload {
-  file: File;
-  url?: string;
-  progress: number;
-  status: 'pending' | 'uploading' | 'success' | 'error';
-  error?: string;
+  file: File
+  url?: string
+  progress?: number
+  error?: string
+  uploaded?: boolean
 }
 
-// ===============================
-// 이벤트 및 액션 타입
-// ===============================
-
-export interface BaseEvent<T = JsonObject> {
-  type: string;
-  payload: T;
-  timestamp: Timestamp;
-  userId?: ID;
+export interface MediaFile {
+  id: string
+  filename: string
+  originalName: string
+  mimeType: string
+  size: number
+  url: string
+  thumbnailUrl?: string
+  metadata?: Record<string, any>
+  uploadedAt: string
+  uploadedBy?: string
 }
 
-export type EventHandler<T = JsonObject> = (event: BaseEvent<T>) => void | Promise<void>;
-
-export interface ActionResult<T = JsonValue> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  warnings?: string[];
+// 주소 타입
+export interface Address {
+  id?: string
+  fullName: string
+  phone: string
+  email?: string
+  address1: string
+  address2?: string
+  city: string
+  state?: string
+  postalCode: string
+  country: string
+  isDefault?: boolean
+  type?: 'shipping' | 'billing'
 }
 
-// ===============================
-// 성능 및 모니터링 타입
-// ===============================
-
-export interface PerformanceMetric {
-  name: string;
-  value: number;
-  unit: string;
-  timestamp: Timestamp;
-  tags?: Record<string, string>;
+// 통화 및 가격 타입
+export interface Money {
+  amount: number
+  currency: string
+  formatted?: string
 }
 
-export interface CacheEntry<T = JsonValue> {
-  data: T;
-  timestamp: Timestamp;
-  ttl: number;
-  tags: string[];
+export interface PriceRange {
+  min: Money
+  max: Money
 }
 
+// 언어 및 로케일
+export interface Locale {
+  code: string
+  name: string
+  flag?: string
+  rtl?: boolean
+}
+
+export interface Translation {
+  key: string
+  value: string
+  locale: string
+  namespace?: string
+  pluralization?: Record<string, string>
+}
+
+// 권한 및 역할
+export interface Permission {
+  id: string
+  name: string
+  description?: string
+  resource: string
+  action: string
+}
+
+export interface Role {
+  id: string
+  name: string
+  description?: string
+  permissions: Permission[]
+  isSystem?: boolean
+}
+
+// 알림 타입
+export interface Notification {
+  id: string
+  title: string
+  message: string
+  type: NotificationType
+  read: boolean
+  userId: string
+  data?: Record<string, any>
+  createdAt: string
+  expiresAt?: string
+}
+
+export enum NotificationType {
+  INFO = 'info',
+  SUCCESS = 'success',
+  WARNING = 'warning',
+  ERROR = 'error',
+  ORDER = 'order',
+  SYSTEM = 'system'
+}
+
+// 세션 타입
+export interface SessionData {
+  id: string
+  userId?: string
+  cartId?: string
+  createdAt: Date
+  expiresAt: Date
+  metadata?: Record<string, any>
+}
+
+// 폼 관련 타입
+export interface FormField<T = any> {
+  name: string
+  value: T
+  error?: string
+  touched?: boolean
+  disabled?: boolean
+  required?: boolean
+}
+
+export interface FormState<T = Record<string, any>> {
+  data: T
+  errors: Record<string, string>
+  touched: Record<string, boolean>
+  isSubmitting: boolean
+  isValid: boolean
+  isDirty: boolean
+}
+
+// 테이블 및 리스트 타입
+export interface TableColumn<T = any> {
+  key: keyof T
+  title: string
+  sortable?: boolean
+  filterable?: boolean
+  render?: (value: any, record: T) => React.ReactNode
+  width?: string | number
+  align?: 'left' | 'center' | 'right'
+}
+
+export interface TableProps<T = any> {
+  data: T[]
+  columns: TableColumn<T>[]
+  loading?: boolean
+  pagination?: {
+    current: number
+    total: number
+    pageSize: number
+    onChange: (page: number, pageSize: number) => void
+  }
+  selection?: {
+    selectedKeys: string[]
+    onChange: (selectedKeys: string[]) => void
+  }
+  actions?: {
+    create?: () => void
+    edit?: (record: T) => void
+    delete?: (record: T) => void
+    view?: (record: T) => void
+  }
+}
+
+// 컴포넌트 공통 Props
+export interface BaseComponentProps {
+  className?: string
+  children?: React.ReactNode
+  id?: string
+  'data-testid'?: string
+}
+
+export interface LoadingProps {
+  loading?: boolean
+  loadingText?: string
+  skeleton?: boolean
+}
+
+export interface ErrorProps {
+  error?: string | Error | null
+  onRetry?: () => void
+  fallback?: React.ReactNode
+}
+
+// 상태 관리 타입
+export interface AsyncState<T = any> {
+  data: T | null
+  loading: boolean
+  error: string | null
+  lastFetch?: Date
+}
+
+export interface CacheConfig {
+  ttl?: number // Time to live in milliseconds
+  maxAge?: number
+  staleWhileRevalidate?: boolean
+}
+
+// 환경 및 설정
+export interface AppConfig {
+  apiUrl: string
+  environment: 'development' | 'staging' | 'production'
+  version: string
+  features: Record<string, boolean>
+  analytics?: {
+    enabled: boolean
+    provider: string
+    trackingId?: string
+  }
+  storage: {
+    provider: 'local' | 's3' | 'cloudinary'
+    bucket?: string
+    region?: string
+  }
+}
+
+// 로그 및 모니터링
 export interface LogEntry {
-  level: 'debug' | 'info' | 'warn' | 'error';
-  message: string;
-  timestamp: Timestamp;
-  context?: JsonObject;
-  userId?: ID;
-  requestId?: string;
+  level: 'debug' | 'info' | 'warn' | 'error'
+  message: string
+  timestamp: string
+  context?: Record<string, any>
+  error?: Error
+  userId?: string
+  sessionId?: string
 }
 
-// ===============================
-// 타입 가드 함수
-// ===============================
-
-export function isJsonObject(value: unknown): value is JsonObject {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-export function isJsonArray(value: unknown): value is JsonArray {
-  return Array.isArray(value);
-}
-
-export function isJsonValue(value: unknown): value is JsonValue {
-  return (
-    typeof value === 'string' ||
-    typeof value === 'number' ||
-    typeof value === 'boolean' ||
-    value === null ||
-    isJsonObject(value) ||
-    isJsonArray(value)
-  );
-}
-
-export function isUserType(value: string): value is UserType {
-  return ['INFLUENCER', 'BUSINESS', 'ADMIN'].includes(value);
-}
-
-export function isLanguageCode(value: string): value is LanguageCode {
-  return ['ko', 'en', 'jp'].includes(value);
-}
-
-export function isSocialPlatform(value: string): value is SocialPlatform {
-  return ['instagram', 'youtube', 'tiktok', 'facebook', 'twitter', 'naverBlog'].includes(value);
+export interface HealthCheck {
+  service: string
+  status: 'healthy' | 'unhealthy' | 'degraded'
+  timestamp: string
+  responseTime?: number
+  error?: string
+  metadata?: Record<string, any>
 }
