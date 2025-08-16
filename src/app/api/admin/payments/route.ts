@@ -58,9 +58,8 @@ export async function GET(request: NextRequest) {
     if (search) {
       where.OR = [
         { orderId: { contains: search, mode: 'insensitive' } },
-        { user: { name: { contains: search, mode: 'insensitive' } } },
-        { user: { email: { contains: search, mode: 'insensitive' } } },
-        { campaign: { title: { contains: search, mode: 'insensitive' } } }
+        { order: { user: { name: { contains: search, mode: 'insensitive' } } } },
+        { order: { user: { email: { contains: search, mode: 'insensitive' } } } }
       ]
     }
 
@@ -68,20 +67,19 @@ export async function GET(request: NextRequest) {
     const payments = await prisma.payment.findMany({
       where,
       include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            type: true
+        order: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                type: true
+              }
+            }
           }
         },
-        campaign: {
-          select: {
-            id: true,
-            title: true
-          }
-        }
+        refunds: true
       },
       orderBy: {
         createdAt: 'desc'
@@ -96,10 +94,19 @@ export async function GET(request: NextRequest) {
     // 통계 정보 계산
     const stats = await prisma.payment.aggregate({
       _sum: {
-        amount: true,
-        refundedAmount: true
+        amount: true
       },
       where: {}
+    })
+
+    // 환불 금액 합계 계산
+    const refundStats = await prisma.refund.aggregate({
+      _sum: {
+        amount: true
+      },
+      where: {
+        status: 'COMPLETED'
+      }
     })
 
     const completedStats = await prisma.payment.aggregate({
@@ -132,7 +139,7 @@ export async function GET(request: NextRequest) {
         totalAmount: stats._sum.amount || 0,
         completedAmount: completedStats._sum.amount || 0,
         pendingAmount: pendingStats._sum.amount || 0,
-        refundedAmount: stats._sum.refundedAmount || 0
+        refundedAmount: refundStats._sum.amount || 0
       }
     })
   } catch (error) {
