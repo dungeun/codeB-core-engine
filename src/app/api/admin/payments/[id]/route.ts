@@ -143,7 +143,7 @@ export async function PUT(
               amount: refundAmount || payment.amount,
               reason: refundReason || '관리자 환불 처리',
               status: 'COMPLETED',
-              processedAt: new Date()
+              completedAt: new Date()
             }
           })
         }
@@ -158,7 +158,7 @@ export async function PUT(
               amount: refundAmount,
               reason: refundReason || '관리자 부분 환불 처리',
               status: 'COMPLETED',
-              processedAt: new Date()
+              completedAt: new Date()
             }
           })
         }
