@@ -7,21 +7,17 @@ export async function GET() {
     const categories = await prisma.category.findMany({
       include: {
         parent: {
-          select: { id: true, name: true, level: true }
+          select: { id: true, name: true }
         },
         children: {
-          select: { id: true, name: true, level: true, isActive: true }
+          select: { id: true, name: true, isActive: true }
         },
-        categoryPage: {
-          select: { id: true, isPublished: true }
-        },
-        campaigns: {
+        products: {
           select: { id: true }
         }
       },
       orderBy: [
-        { level: 'asc' },
-        { menuOrder: 'asc' },
+        { position: 'asc' },
         { name: 'asc' }
       ]
     })
@@ -30,7 +26,7 @@ export async function GET() {
       success: true,
       categories: categories.map(cat => ({
         ...cat,
-        campaignCount: cat.campaigns.length
+        productCount: cat.products.length
       }))
     })
   } catch (error) {
@@ -61,19 +57,16 @@ export async function POST(request: NextRequest) {
     }
 
     // 부모 카테고리가 있는 경우 레벨 계산
-    let level = 1
+    // 부모 카테고리 존재 확인 (level 체크는 스키마에 level 필드가 없으므로 생략)
     if (parentId) {
       const parent = await prisma.category.findUnique({
         where: { id: parentId }
       })
-      if (parent) {
-        level = parent.level + 1
-        if (level > 3) { // 최대 3단계까지만 허용
-          return NextResponse.json(
-            { success: false, error: 'Maximum category depth (3 levels) exceeded' },
-            { status: 400 }
-          )
-        }
+      if (!parent) {
+        return NextResponse.json(
+          { success: false, error: 'Parent category not found' },
+          { status: 400 }
+        )
       }
     }
 
@@ -82,18 +75,15 @@ export async function POST(request: NextRequest) {
         name,
         slug,
         parentId,
-        level,
         description,
-        icon,
-        color,
-        imageUrl
+        image: imageUrl
       },
       include: {
         parent: {
-          select: { id: true, name: true, level: true }
+          select: { id: true, name: true }
         },
         children: {
-          select: { id: true, name: true, level: true }
+          select: { id: true, name: true }
         }
       }
     })

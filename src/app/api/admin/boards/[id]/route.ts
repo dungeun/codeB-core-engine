@@ -18,7 +18,7 @@ export async function DELETE(
     const result = await prisma.$transaction(async (tx) => {
       // 게시판의 모든 게시물 ID 가져오기
       const posts = await tx.post.findMany({
-        where: { boardId: boardId },
+        where: { category: boardId },
         select: { id: true }
       })
 
@@ -35,23 +35,16 @@ export async function DELETE(
           where: { postId: { in: postIds } }
         })
 
-        // 첨부파일 삭제
-        await tx.attachment.deleteMany({
-          where: { postId: { in: postIds } }
-        })
+        // 첨부파일 삭제는 스키마에 Attachment 모델이 없으므로 스킵
 
         // 게시물 삭제
         await tx.post.deleteMany({
-          where: { boardId: boardId }
+          where: { category: boardId }
         })
       }
 
-      // 게시판 삭제
-      const deletedBoard = await tx.board.delete({
-        where: { id: boardId }
-      })
-
-      return deletedBoard
+      // Board 모델이 스키마에 없으므로 카테고리 기반 처리로 변경
+      return { id: boardId, message: 'Category posts deleted' }
     })
 
     return NextResponse.json({ 
@@ -89,19 +82,11 @@ export async function PUT(
       )
     }
 
-    const updatedBoard = await prisma.board.update({
-      where: { id: boardId },
-      data: {
-        name: body.name,
-        description: body.description,
-        isPublic: body.isPublic ?? true,
-        isActive: body.isActive ?? true,
-        order: body.order,
-        updatedAt: new Date()
-      }
-    })
-
-    return NextResponse.json(updatedBoard)
+    // Board 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'Board model not implemented in schema' },
+      { status: 501 }
+    )
 
   } catch (error) {
     console.error('Error updating board:', error)

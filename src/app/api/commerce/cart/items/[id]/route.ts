@@ -3,8 +3,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { CartService } from '@/lib/services/cart.service'
 import { UpdateCartItemSchema } from '@/lib/validations/product'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// SessionManager를 통한 인증 처리
+
 import { prisma } from '@/lib/prisma'
 
 // PATCH /api/commerce/cart/items/[id] - 장바구니 아이템 수량 수정
@@ -13,7 +13,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const body = await request.json()
     const cartItemId = params.id
 
@@ -122,7 +122,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const cartItemId = params.id
 
     // 장바구니 아이템 조회 및 소유권 확인

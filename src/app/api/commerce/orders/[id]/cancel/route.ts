@@ -2,8 +2,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { OrderService } from '@/lib/services/order.service'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// SessionManager를 통한 인증 처리
+
 import { prisma } from '@/lib/prisma'
 
 // POST /api/commerce/orders/[id]/cancel - 주문 취소
@@ -12,7 +12,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const orderId = params.id
     const body = await request.json()
 

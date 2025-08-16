@@ -6,14 +6,15 @@ import {
   CreateOrderSchema,
   OrderQuerySchema
 } from '@/lib/validations/product'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// SessionManager가 인증 처리를 담당합니다
 import { prisma } from '@/lib/prisma'
+import { SessionManager } from '@/lib/session/session-manager'
 
 // GET /api/commerce/orders - 주문 목록 조회
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    // SessionManager를 통해 인증된 사용자 확인
+    const session = await SessionManager.getServerSession()
     const searchParams = request.nextUrl.searchParams
     const queryParams = Object.fromEntries(searchParams.entries())
     
@@ -71,7 +72,8 @@ export async function GET(request: NextRequest) {
 // POST /api/commerce/orders - 새 주문 생성
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    // SessionManager를 통해 인증된 사용자 확인
+    const session = await SessionManager.getServerSession()
     const body = await request.json()
 
     // 입력 데이터 검증

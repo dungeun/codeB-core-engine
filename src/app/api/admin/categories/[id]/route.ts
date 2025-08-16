@@ -16,13 +16,8 @@ export async function GET(
             children: true // 3단계까지 조회
           }
         },
-        categoryPage: true,
-        campaigns: {
-          include: {
-            campaign: {
-              select: { id: true, title: true, status: true, createdAt: true }
-            }
-          }
+        products: {
+          select: { id: true, name: true, price: true }
         }
       }
     })
@@ -79,12 +74,9 @@ export async function PUT(
         name,
         slug,
         description,
-        icon,
-        color,
-        imageUrl,
+        image: imageUrl,
         isActive,
-        showInMenu,
-        menuOrder
+        position: menuOrder || 0
       },
       include: {
         parent: true,
@@ -144,14 +136,14 @@ export async function DELETE(
       )
     }
 
-    // 캠페인이 연결되어 있는지 체크
-    const campaignCount = await prisma.campaignCategory.count({
+    // 제품이 연결되어 있는지 체크
+    const productCount = await prisma.product.count({
       where: { categoryId: params.id }
     })
 
-    if (campaignCount > 0) {
+    if (productCount > 0) {
       return NextResponse.json(
-        { success: false, error: 'Cannot delete category with linked campaigns' },
+        { success: false, error: 'Cannot delete category with linked products' },
         { status: 400 }
       )
     }

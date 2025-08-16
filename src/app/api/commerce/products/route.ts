@@ -7,8 +7,7 @@ import {
   CreateProductSchema,
   ProductFilterSchema 
 } from '@/lib/validations/product'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { SessionManager } from '@/lib/session/session-manager'
 
 // GET /api/commerce/products - 제품 목록 조회
 export async function GET(request: NextRequest) {
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // 인증 확인
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     if (!session?.user) {
       return NextResponse.json(
         { error: '로그인이 필요합니다.' },

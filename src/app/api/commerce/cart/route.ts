@@ -2,15 +2,14 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { CartService } from '@/lib/services/cart.service'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// SessionManager가 인증 처리를 담당합니다
 import { prisma } from '@/lib/prisma'
 import { SessionManager } from '@/lib/session/session-manager'
 
 // GET /api/commerce/cart - 장바구니 조회 (로그인/비로그인 사용자 지원)
 export async function GET(request: NextRequest) {
   try {
-    const authSession = await getServerSession(authOptions)
+    // SessionManager를 통해 인증된 사용자 확인
     
     // 먼저 secure session에서 session ID 가져오기
     const sessionData = await SessionManager.getServerSession()

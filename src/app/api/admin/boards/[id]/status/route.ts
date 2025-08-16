@@ -36,20 +36,11 @@ export async function PATCH(
       )
     }
 
-    // 게시판 상태 업데이트
-    const board = await prisma.board.update({
-      where: { id: params.id },
-      data: {
-        status,
-        updatedAt: new Date()
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: '게시판 상태가 변경되었습니다',
-      board
-    })
+    // Board 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'Board model not implemented in schema' },
+      { status: 501 }
+    )
   } catch (error) {
     console.error('Failed to update board status:', error)
     return NextResponse.json(

@@ -6,14 +6,14 @@ import {
   AddToCartSchema, 
   RemoveFromCartSchema 
 } from '@/lib/validations/product'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// SessionManager를 통한 인증 처리
+
 import { prisma } from '@/lib/prisma'
 
 // POST /api/commerce/cart/items - 장바구니에 상품 추가
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const sessionId = request.headers.get('x-session-id') || request.cookies.get('session_id')?.value
     const body = await request.json()
 
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 // DELETE /api/commerce/cart/items - 장바구니에서 상품 제거
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const sessionId = request.headers.get('x-session-id') || request.cookies.get('session_id')?.value
     const body = await request.json()
 

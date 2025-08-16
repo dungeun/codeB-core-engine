@@ -3,8 +3,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { OrderService } from '@/lib/services/order.service'
 import { UpdateOrderSchema } from '@/lib/validations/product'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// SessionManager를 통한 인증 처리
+
 import { prisma } from '@/lib/prisma'
 
 // GET /api/commerce/orders/[id] - 주문 상세 조회
@@ -13,7 +13,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const orderId = params.id
 
     // 주문 조회
@@ -66,7 +66,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const orderId = params.id
     const body = await request.json()
 

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
+import { SessionManager } from '@/lib/session/session-manager'
 import { verifyJWT } from '@/lib/auth/jwt'
 
 export const dynamic = 'force-dynamic'

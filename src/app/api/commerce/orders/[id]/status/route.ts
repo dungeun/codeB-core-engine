@@ -3,8 +3,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { OrderService } from '@/lib/services/order.service'
 import { OrderStatusSchema } from '@/lib/validations/product'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+// SessionManager를 통한 인증 처리
+
 import { prisma } from '@/lib/prisma'
 
 // PATCH /api/commerce/orders/[id]/status - 주문 상태 변경 (관리자 전용)
@@ -13,7 +13,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await SessionManager.getServerSession()
     const orderId = params.id
     const body = await request.json()
 

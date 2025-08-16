@@ -7,29 +7,11 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const categoryPage = await prisma.categoryPage.findUnique({
-      where: { id: params.id },
-      include: {
-        category: {
-          include: {
-            parent: true,
-            children: true
-          }
-        }
-      }
-    })
-
-    if (!categoryPage) {
-      return NextResponse.json(
-        { success: false, error: 'Category page not found' },
-        { status: 404 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      categoryPage
-    })
+    // CategoryPage 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'CategoryPage model not implemented in schema' },
+      { status: 501 }
+    )
   } catch (error) {
     console.error('Error fetching category page:', error)
     return NextResponse.json(
@@ -45,42 +27,11 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const data = await request.json()
-    const {
-      title,
-      content,
-      layout,
-      heroSection,
-      featuredSection,
-      filterOptions,
-      customSections,
-      seoSettings,
-      isPublished
-    } = data
-
-    const categoryPage = await prisma.categoryPage.update({
-      where: { id: params.id },
-      data: {
-        title,
-        content,
-        layout,
-        heroSection,
-        featuredSection,
-        filterOptions,
-        customSections,
-        seoSettings,
-        isPublished,
-        publishedAt: isPublished ? new Date() : null
-      },
-      include: {
-        category: true
-      }
-    })
-
-    return NextResponse.json({
-      success: true,
-      categoryPage
-    })
+    // CategoryPage 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'CategoryPage model not implemented in schema' },
+      { status: 501 }
+    )
   } catch (error) {
     console.error('Error updating category page:', error)
     return NextResponse.json(
@@ -96,14 +47,11 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    await prisma.categoryPage.delete({
-      where: { id: params.id }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Category page deleted successfully'
-    })
+    // CategoryPage 모델이 스키마에 없으므로 현재 사용 불가
+    return NextResponse.json(
+      { error: 'CategoryPage model not implemented in schema' },
+      { status: 501 }
+    )
   } catch (error) {
     console.error('Error deleting category page:', error)
     return NextResponse.json(

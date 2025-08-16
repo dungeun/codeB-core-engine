@@ -49,7 +49,7 @@ function AdminProductsPage() {
     brand: '',
     sku: '',
     stock: 0,
-    status: 'DRAFT' as const,
+    status: 'DRAFT' as 'ACTIVE' | 'INACTIVE' | 'DRAFT',
     featured: false,
     images: [] as string[]
   })
@@ -182,7 +182,7 @@ function AdminProductsPage() {
       brand: '',
       sku: '',
       stock: 0,
-      status: 'DRAFT',
+      status: 'DRAFT' as 'ACTIVE' | 'INACTIVE' | 'DRAFT',
       featured: false,
       images: []
     })
@@ -200,7 +200,7 @@ function AdminProductsPage() {
       brand: product.brand || '',
       sku: product.sku,
       stock: product.stock,
-      status: product.status,
+      status: product.status as 'ACTIVE' | 'INACTIVE' | 'DRAFT',
       featured: product.featured,
       images: product.images
     })
