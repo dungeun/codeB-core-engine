@@ -2,8 +2,71 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ClientSessionHelper } from '@/lib/session/session-manager'
-import { ClientCSRFHelper } from '@/lib/security/csrf'
+// CSRF 헬퍼 함수들을 직접 구현
+const CSRF_TOKEN_NAME = 'csrf_token'
+const CSRF_HEADER_NAME = 'x-csrf-token'
+
+const getCSRFTokenFromCookie = (): string | null => {
+  if (typeof window === 'undefined') return null
+  
+  const name = CSRF_TOKEN_NAME + '='
+  const decodedCookie = decodeURIComponent(document.cookie)
+  const ca = decodedCookie.split(';')
+  
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i]
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1)
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length)
+    }
+  }
+  return null
+}
+
+const addCSRFTokenToHeaders = (headers: HeadersInit = {}): HeadersInit => {
+  const token = getCSRFTokenFromCookie()
+  if (token) {
+    return {
+      ...headers,
+      [CSRF_HEADER_NAME]: token
+    }
+  }
+  return headers
+}
+
+// 클라이언트용 세션 헬퍼 함수들
+const getSessionFromCookie = (): string | null => {
+  if (typeof window === 'undefined') return null
+  
+  const name = 'session_token='
+  const decodedCookie = decodeURIComponent(document.cookie)
+  const ca = decodedCookie.split(';')
+  
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i]
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1)
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length)
+    }
+  }
+  return null
+}
+
+const migrateFromLocalStorage = (): string | null => {
+  if (typeof window === 'undefined') return null
+  
+  const oldSessionId = localStorage.getItem('session_id')
+  if (oldSessionId) {
+    // 기존 localStorage 세션 ID 제거
+    localStorage.removeItem('session_id')
+    return oldSessionId
+  }
+  return null
+}
 
 export function useSecureSession() {
   const [sessionToken, setSessionToken] = useState<string | null>(null)
@@ -12,14 +75,14 @@ export function useSecureSession() {
 
   useEffect(() => {
     // 쿠키에서 세션 토큰 가져오기
-    const token = ClientSessionHelper.getSessionFromCookie()
+    const token = getSessionFromCookie()
     
     // CSRF 토큰 가져오기
     fetchCSRFToken()
     
     if (!token) {
       // localStorage에서 마이그레이션 시도
-      const oldSessionId = ClientSessionHelper.migrateFromLocalStorage()
+      const oldSessionId = migrateFromLocalStorage()
       
       if (oldSessionId) {
         // 서버에 마이그레이션 요청
@@ -100,7 +163,7 @@ export function useSecureSession() {
     }
     
     // CSRF 토큰 추가
-    return ClientCSRFHelper.addTokenToHeaders(headers)
+    return addCSRFTokenToHeaders(headers)
   }
 
   return {

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useTranslations } from '@/hooks/use-translations'
+import { useLanguage } from '@/hooks/useLanguage'
 
 interface Product {
   id: string
@@ -28,7 +28,7 @@ interface PaginationMeta {
 }
 
 export default function ProductsPage() {
-  const t = useTranslations()
+  const { t } = useLanguage()
   const searchParams = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)

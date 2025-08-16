@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useTranslations } from '@/hooks/use-translations'
+import { useLanguage } from '@/hooks/useLanguage'
 import { useSecureSession } from '@/hooks/useSecureSession'
 import { useToast } from '@/contexts/ToastContext'
 import Link from 'next/link'
@@ -31,7 +31,7 @@ interface OrderItem {
 }
 
 export default function OrdersPage() {
-  const t = useTranslations()
+  const { t } = useLanguage()
   const { data: session } = useSession()
   const { getSessionHeaders, isLoading: sessionLoading } = useSecureSession()
   const { showSuccess, showError } = useToast()

@@ -5,10 +5,12 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTranslations } from '@/hooks/use-translations'
+import { useLanguage } from '@/hooks/useLanguage'
 import { useSession } from 'next-auth/react'
 import { useSecureSession } from '@/hooks/useSecureSession'
-import { useToast } from '@/contexts/ToastContext'\nimport { useFormValidation } from '@/hooks/useFormValidation'\nimport { UpdateCartItemSchema, CouponSchema } from '@/lib/validation/commerce'
+import { useToast } from '@/contexts/ToastContext'
+import { useFormValidation } from '@/hooks/useFormValidation'
+import { UpdateCartItemSchema, CouponSchema } from '@/lib/validation/commerce'
 
 interface CartItem {
   id: string
@@ -35,7 +37,7 @@ interface Cart {
 }
 
 export default function CartPage() {
-  const t = useTranslations()
+  const { t } = useLanguage()
   const { data: session } = useSession()
   const { getSessionHeaders, isLoading: sessionLoading } = useSecureSession()
   const { showSuccess, showError, showWarning } = useToast()

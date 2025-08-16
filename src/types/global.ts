@@ -334,3 +334,14 @@ export interface HealthCheck {
   error?: string
   metadata?: Record<string, any>
 }
+
+// 헬퍼 함수들
+export function isJsonObject(value: any): value is Record<string, any> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+export function isLanguageCode(value: string): boolean {
+  // ISO 639-1 language codes
+  const languageCodes = ['ko', 'en', 'ja', 'zh', 'es', 'fr', 'de', 'pt', 'it', 'ru']
+  return languageCodes.includes(value.toLowerCase())
+}

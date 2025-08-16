@@ -65,3 +65,12 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Commerce integration folder - not part of build
+/commerce-nextjs/
+
+# Backup files
+*.bak
+
+# Task data
+/data/

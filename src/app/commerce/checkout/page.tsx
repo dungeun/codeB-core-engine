@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useTranslations } from '@/hooks/use-translations'
+import { useLanguage } from '@/hooks/useLanguage'
 import { useSecureSession } from '@/hooks/useSecureSession'
 import { useToast } from '@/contexts/ToastContext'
 import Image from 'next/image'
@@ -61,7 +61,7 @@ interface CartItem {
 }
 
 export default function CheckoutPage() {
-  const t = useTranslations()
+  const { t } = useLanguage()
   const { data: session } = useSession()
   const { getSessionHeaders, isLoading: sessionLoading } = useSecureSession()
   const { showSuccess, showError, showWarning } = useToast()
