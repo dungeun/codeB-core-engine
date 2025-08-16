@@ -43,8 +43,11 @@ export async function GET(
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
       include: {
-        user: true,
-        campaign: true,
+        order: {
+          include: {
+            user: true
+          }
+        },
         refunds: true
       }
     })
@@ -167,21 +170,14 @@ export async function PUT(
       where: { id: paymentId },
       data: updateData,
       include: {
-        user: true,
-        campaign: true
+        order: {
+          include: {
+            user: true
+          }
+        },
+        refunds: true
       }
     })
-
-    // 캠페인 상태 업데이트 (결제 완료 시)
-    if (status.toUpperCase() === 'COMPLETED' && payment.campaignId) {
-      await prisma.campaign.update({
-        where: { id: payment.campaignId },
-        data: {
-          isPaid: true,
-          status: 'ACTIVE'
-        }
-      })
-    }
 
     return NextResponse.json({
       message: '결제 상태가 업데이트되었습니다.',
