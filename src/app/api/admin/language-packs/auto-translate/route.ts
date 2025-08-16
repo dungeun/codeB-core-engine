@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     let en = ko
-    let ja = ko
+    let jp = ko
 
     // 자동 번역 수행
     if (autoTranslate) {
@@ -45,12 +45,12 @@ export async function POST(request: NextRequest) {
         en = await translateText(ko, 'ko', 'en')
         
         // 한국어 → 일본어 번역
-        ja = await translateText(ko, 'ko', 'ja')
+        jp = await translateText(ko, 'ko', 'ja')
       } catch (translationError) {
         console.error('Translation error:', translationError)
         // 번역 실패 시 원본 텍스트 사용
         en = ko
-        ja = ko
+        jp = ko
       }
     }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         key,
         ko,
         en,
-        ja,
+        jp,
         category,
         description: `Auto-generated menu item for: ${ko}`,
         isEditable: true
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       key: languagePack.key,
       ko: languagePack.ko,
       en: languagePack.en,
-      ja: languagePack.ja
+      jp: languagePack.jp
     })
 
   } catch (error) {
@@ -119,7 +119,7 @@ export async function PUT(request: NextRequest) {
     }
 
     let en = existingPack.en
-    let ja = existingPack.ja
+    let jp = existingPack.jp
 
     // 자동 번역 수행
     if (autoTranslate) {
@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
         en = await translateText(ko, 'ko', 'en')
         
         // 한국어 → 일본어 번역
-        ja = await translateText(ko, 'ko', 'ja')
+        jp = await translateText(ko, 'ko', 'ja')
       } catch (translationError) {
         console.error('Translation error:', translationError)
         // 번역 실패 시 기존 값 유지
@@ -141,7 +141,7 @@ export async function PUT(request: NextRequest) {
       data: {
         ko,
         en,
-        ja,
+        jp,
         updatedAt: new Date()
       }
     })
@@ -153,7 +153,7 @@ export async function PUT(request: NextRequest) {
       key: updatedPack.key,
       ko: updatedPack.ko,
       en: updatedPack.en,
-      ja: updatedPack.ja
+      jp: updatedPack.jp
     })
 
   } catch (error) {
