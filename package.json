@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--max-old-space-size=512' PORT=$(node scripts/find-free-port.js) && echo \"🚀 Starting REVU Platform on port $PORT\" && next dev -p $PORT",
     "dev:clean": "rm -rf .next && npm run dev",
-    "build": "prisma generate && prisma db push --accept-data-loss && next build",
+    "build": "prisma generate && next build",
     "build:analyze": "prisma generate && ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
@@ -15,6 +15,7 @@
     "restart": "npm run stop && npm run dev",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
+    "db:push:prod": "prisma db push --accept-data-loss",
     "db:migrate": "prisma migrate dev",
     "db:seed": "ts-node prisma/seed-sample-data.ts",
     "db:seed-korean": "ts-node prisma/clear-and-seed-korean.ts",
